@@ -1,145 +1,88 @@
+/**
+ * @file CameraList.js
+ * @description Thành phần (Component) hiển thị danh sách các camera đang quản lý.
+ * Cho phép xem nhanh thông số camera và xoá camera khỏi danh sách.
+ */
 import React from 'react';
 
 function CameraList({ cameras, setCameras, onSelectCamera }) {
-  if (!cameras || cameras.length === 0) {
-    return null;
-  }
-
-  const handleDelete = (camId) => {
-    if (window.confirm('Xóa camera này?')) {
-      const updatedCameras = cameras.filter(cam => cam.cam_info?.cam_id !== camId);
-      setCameras(updatedCameras);
-    }
+  const handleDelete = (indexToDelete, e) => {
+    e.stopPropagation();
+    const updatedCameras = cameras.filter((_, idx) => idx !== indexToDelete);
+    setCameras(updatedCameras);
   };
 
   return (
-    <div className="camera-list">
-      <h3>Danh sách Camera ({cameras.length})</h3>
-      <div className="camera-grid">
-        {cameras.map((camera, index) => (
-          <div key={camera.cam_info?.cam_id || index} className="camera-card">
-            {camera.image && (
-              <div className="camera-image">
+    <div className="camera-list-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px', padding: '20px' }}>
+      {cameras.map((cam, index) => {
+        // Trích xuất số lượng zone cho UI
+        const zoneCount = cam.config?.zone?.length || 0;
+        const camUrl = cam.cam_info?.url || 'No URL provided';
+        
+        return (
+          <div 
+            key={cam.cam_info?.cam_id || index} 
+            className="camera-card" 
+            style={{
+              background: '#ffffff',
+              borderRadius: '12px',
+              border: '1px solid #e2e8f0',
+              overflow: 'hidden',
+              cursor: 'pointer',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)'
+            }}
+            onClick={() => onSelectCamera && onSelectCamera(cam)}
+            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.05)'; }}
+          >
+            {/* Hiển thị ảnh chụp từ luồng camera */}
+            <div className="camera-preview" style={{ height: '180px', background: '#f8fafc', position: 'relative' }}>
+              {cam.image ? (
                 <img 
-                  src={`http://localhost:5000${camera.image}`} 
-                  alt={`Camera ${index + 1}`}
-                  className="preview-image"
-                  onError={(e) => {
-                    e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
-                  }}
+                  src={cam.image} 
+                  alt="Camera Preview" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                 />
+              ) : (
+                <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                  No Preview Image
+                </div>
+              )}
+              <div style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(0,0,0,0.6)', color: 'white', padding: '4px 10px', borderRadius: '20px', fontSize: '12px' }}>
+                {zoneCount} Zones
               </div>
-            )}
-            <div className="camera-info">
-              <h4>Camera {index + 1}</h4>
-              <p className="camera-url">
-                <strong>URL:</strong> {camera.cam_info?.url || 'N/A'}
+            </div>
+
+            {/* Thông tin metadata camera */}
+            <div className="camera-info" style={{ padding: '16px' }}>
+              <h4 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {camUrl}
+              </h4>
+              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
+                ID: {cam.cam_info?.cam_id?.substring(0, 10)}...
               </p>
-              <div className="camera-actions">
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
+                <span style={{ padding: '4px 8px', background: '#e0e7ff', color: '#4338ca', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' }}>
+                  AI Active
+                </span>
                 <button 
-                  onClick={() => onSelectCamera(camera)}
-                  className="btn-select"
+                  onClick={(e) => handleDelete(index, e)}
+                  style={{
+                    background: 'transparent', border: 'none', color: '#ef4444',
+                    cursor: 'pointer', padding: '4px 8px', borderRadius: '4px'
+                  }}
+                  onMouseOver={(e) => { e.currentTarget.style.background = '#fee2e2'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; }}
                 >
-                  Chọn
-                </button>
-                <button 
-                  onClick={() => handleDelete(camera.cam_info?.cam_id)}
-                  className="btn-delete"
-                >
-                  Xóa
+                  Xoá
                 </button>
               </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      <style jsx>{`
-        .camera-list {
-          padding: 20px;
-        }
-
-        .camera-list h3 {
-          margin-bottom: 20px;
-          color: #333;
-        }
-
-        .camera-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 20px;
-        }
-
-        .camera-card {
-          border: 1px solid #e0e4e8;
-          border-radius: 8px;
-          overflow: hidden;
-          background: white;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .camera-image {
-          height: 180px;
-          background: #f5f5f5;
-          overflow: hidden;
-        }
-
-        .preview-image {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .camera-info {
-          padding: 15px;
-        }
-
-        .camera-info h4 {
-          margin: 0 0 10px 0;
-          color: #333;
-        }
-
-        .camera-url {
-          font-size: 12px;
-          color: #666;
-          margin-bottom: 15px;
-          word-break: break-all;
-        }
-
-        .camera-actions {
-          display: flex;
-          gap: 10px;
-        }
-
-        .btn-select,
-        .btn-delete {
-          flex: 1;
-          padding: 8px;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 13px;
-          transition: all 0.2s;
-        }
-
-        .btn-select {
-          background: #007bff;
-          color: white;
-        }
-
-        .btn-select:hover {
-          background: #0056b3;
-        }
-
-        .btn-delete {
-          background: #dc3545;
-          color: white;
-        }
-
-        .btn-delete:hover {
-          background: #c82333;
-        }
-      `}</style>
+        );
+      })}
     </div>
   );
 }

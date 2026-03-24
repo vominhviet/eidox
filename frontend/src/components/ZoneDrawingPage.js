@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+/**
+ * @file ZoneDrawingPage.js
+ * @description Trang quản lý khu vực vẽ zone cho AI Camera. 
+ * Nhận dữ liệu stream/ảnh từ page trước và mount giao diện Canvas vẽ.
+ */
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DrawingCanvas from './DrawingCanvas';
+import './ZoneDrawingPage.css'; // [NEW] Tích hợp CSS tách biệt
 
 function ZoneDrawingPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { cameraData } = location.state || {};
 
+  /**
+   * @function handleSave
+   * @description Gọi khi người dùng bấm lưu cấu hình json zone, điều hướng về màn hình quản lý.
+   * @param {Object} config JSON config AI trả về từ Canvas
+   */
   const handleSave = (config) => {
-    // Quay lại trang trước với config đã vẽ
     navigate('/cameras', { 
       state: { 
         savedConfig: config,
@@ -17,35 +27,21 @@ function ZoneDrawingPage() {
     });
   };
 
+  /**
+   * @function handleBack
+   * @description Quay lại trang quản lý camera
+   */
   const handleBack = () => {
-    navigate(-1); // Quay lại trang trước
+    navigate(-1); 
   };
 
+  // Nếu truy cập URL trực tiếp mà không có data camera -> Hiển thị lỗi
   if (!cameraData) {
     return (
-      <div style={{ 
-        padding: '50px', 
-        textAlign: 'center',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        minHeight: '100vh',
-        color: 'white'
-      }}>
+      <div className="zone-page-empty">
         <h2>Không có dữ liệu camera</h2>
         <p>Vui lòng quay lại và thử lại.</p>
-        <button 
-          onClick={handleBack}
-          style={{
-            padding: '12px 30px',
-            background: 'white',
-            color: '#667eea',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            marginTop: '20px'
-          }}
-        >
+        <button className="btn-back-light" onClick={handleBack}>
           ← Quay lại
         </button>
       </div>
@@ -53,63 +49,22 @@ function ZoneDrawingPage() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '20px'
-    }}>
-      {/* Header */}
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto 20px auto',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        background: 'rgba(255,255,255,0.1)',
-        backdropFilter: 'blur(10px)',
-        padding: '15px 30px',
-        borderRadius: '12px',
-        color: 'white'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <button
-            onClick={handleBack}
-            style={{
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              color: 'white',
-              padding: '8px 16px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px'
-            }}
-          >
+    <div className="zone-page-container">
+      {/* ---------------- Header ---------------- */}
+      <div className="zone-header">
+        <div className="header-left">
+          <button className="btn-back-dark" onClick={handleBack}>
             ← Quay lại
           </button>
-          <h2 style={{ margin: 0 }}>✏️ Vẽ Zone</h2>
+          <h2 className="header-title">✏️ Vẽ Zone AI</h2>
         </div>
-        <div style={{
-          background: 'rgba(255,255,255,0.2)',
-          padding: '8px 16px',
-          borderRadius: '20px',
-          fontSize: '14px'
-        }}>
-          📹 {cameraData.rtspUrl || 'Camera'}
+        <div className="camera-url-badge">
+          📹 {cameraData.rtspUrl || 'Unknown Camera stream'}
         </div>
       </div>
 
-      {/* Drawing Canvas */}
-      <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        background: 'white',
-        borderRadius: '12px',
-        padding: '20px',
-        boxShadow: '0 10px 40px rgba(0,0,0,0.2)'
-      }}>
+      {/* ---------------- Canvas Area ---------------- */}
+      <div className="canvas-wrapper">
         <DrawingCanvas 
           cameraData={cameraData}
           onSave={handleSave}

@@ -1,72 +1,86 @@
+/**
+ * @file server.js
+ * @description Điểm vào (Entry point) chính của hệ thống Node.js Backend cho Camera Admin.
+ * Khởi tạo Express server, cấu hình CORS, xử lý JSON, và tích hợp các bộ định tuyến (router).
+ */
+
 const express = require('express');
 const cors = require('cors');
-const multer = require('multer');
+const axios = require('axios');
 const path = require('path');
-const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
-const dotenv = require('dotenv');
-const apiRoutes = require('./routes/api');
-
-dotenv.config();
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}));
-app.use(express.json({ limit: '50mb' }));
+// Cấu hình Middleware
+app.use(cors()); // Cho phép giao diện Frontend React gọi API
+app.use(express.json({ limit: '50mb' })); // Hỗ trợ body JSON lớn (cho zone payload)
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Configure multer for image upload
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, 'uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${uuidv4()}${path.extname(file.originalname)}`;
-    cb(null, uniqueName);
-  }
-});
-
-const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif|webp/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    
-    if (mimetype && extname) {
-      return cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed'));
-    }
-  }
-});
-
-// Make upload available to routes
-app.locals.upload = upload;
-
-// API Routes
-app.use('/api', apiRoutes);
-
-// Serve uploaded files
+// Đường dẫn static cho các file upload (như ảnh camera)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: err.message });
+// ------------------------------------------------------------------
+// CẤU HÌNH JENKINS TỪ .ENV
+// ------------------------------------------------------------------
+const JENKINS_AUTH = Buffer.from(`${process.env.JENKINS_USER}:${process.env.JENKINS_TOKEN}`).toString('base64');
+const JENKINS_JOB_URL = `${process.env.JENKINS_URL}/job/${process.env.JENKINS_JOB_NAME}/buildWithParameters`;
+
+/**
+ * @api {post} /api/deploy-config 
+ * @description API Nhận JSON chứa thông tin cấu hình (Zone Camera) từ React và gửi sang Jenkins.
+ */
+app.post('/api/deploy-config', async (req, res) => {
+    try {
+        const configData = req.body; 
+
+        console.log(`\n🚀 Đang gửi cấu hình tới Jenkins...`);
+        console.log(`📹 URL Camera: ${configData.list_camera?.[0]?.cam_info?.url || 'Unknown'}`);
+
+        // Gửi HTTP POST tới Jenkins để kích hoạt Pipeline (buildWithParameters)
+        // kèm tham số CONFIG_DATA là chuỗi JSON
+        const response = await axios.post(JENKINS_JOB_URL, null, {
+            params: {
+                CONFIG_DATA: JSON.stringify(configData)
+            },
+            headers: {
+                'Authorization': `Basic ${JENKINS_AUTH}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+
+        res.status(200).json({ 
+            success: true, 
+            message: "Gửi lệnh tới Jenkins thành công!",
+            jenkins_http_status: response.status 
+        });
+
+    } catch (error) {
+        console.error("❌ Jenkins API Error:", error.response ? error.response.data : error.message);
+        res.status(500).json({ 
+            success: false, 
+            error: "Lỗi kết nối Jenkins Server hoặc cấu hình .env không hợp lệ.",
+            details: error.message
+        });
+    }
 });
 
+// ------------------------------------------------------------------
+// MOUNT CÁC ROUTER KHÁC (API CRUD Cameras)
+// ------------------------------------------------------------------
+try {
+    const apiRouter = require('./routes/api');
+    app.use('/api', apiRouter);
+    console.log('✅ Mounted /routes/api.js successfully.');
+} catch (error) {
+    console.warn("⚠️ API routes (/routes/api.js) encountered an issue or is missing:", error.message);
+}
+
+// Khởi động Server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Jenkins URL: ${process.env.JENKINS_URL || 'http://localhost:8080'}`);
+    console.log(`\n==============================================`);
+    console.log(`🌐 Server is running on http://localhost:${PORT}`);
+    console.log(`🔧 Jenkins URL: ${process.env.JENKINS_URL || 'Chưa cấu hình (Kiểm tra file .env)'}`);
+    console.log(`==============================================\n`);
 });

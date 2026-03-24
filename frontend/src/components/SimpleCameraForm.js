@@ -1,4 +1,10 @@
+/**
+ * @file SimpleCameraForm.js
+ * @description Form nhập liệu tối giản để lấy thông tin RTSP Camera và ảnh tĩnh trước khi vẽ zone.
+ * Hỗ trợ validation nội dung cơ bản, preview hình ảnh.
+ */
 import React, { useState } from 'react';
+import './SimpleCameraForm.css'; // [NEW] Import style từ file CSS ngoài
 
 function SimpleCameraForm({ onNext, onCancel }) {
   const [rtspUrl, setRtspUrl] = useState('');
@@ -6,6 +12,9 @@ function SimpleCameraForm({ onNext, onCancel }) {
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState('');
 
+  /**
+   * Xử lý đọc file ảnh hiển thị preview lên màn hình.
+   */
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -18,16 +27,19 @@ function SimpleCameraForm({ onNext, onCancel }) {
     }
   };
 
+  /**
+   * Xử lý xác nhận form tạo camera.
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     
     if (!rtspUrl) {
-      setError('Vui lòng nhập RTSP URL');
+      setError('Vui lòng nhập đường dẫn RTSP URL hợp lệ.');
       return;
     }
 
     if (!image) {
-      setError('Vui lòng upload ảnh camera');
+      setError('Vui lòng cung cấp hình ảnh chụp từ camera để vẽ vùng nhận diện.');
       return;
     }
 
@@ -39,113 +51,55 @@ function SimpleCameraForm({ onNext, onCancel }) {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="simple-camera-form">
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500 }}>
-            RTSP URL:
-          </label>
+        <div className="form-group">
+          <label className="form-label">Đường dẫn luồng RTSP:</label>
           <input
             type="text"
             value={rtspUrl}
             onChange={(e) => setRtspUrl(e.target.value)}
             placeholder="rtsp://username:password@ip:port/stream"
-            style={{
-              width: '100%',
-              padding: '10px',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              fontSize: '14px'
-            }}
+            className="form-input"
             required
           />
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ display: 'block', marginBottom: '8px', fontWeight: 500 }}>
-            Ảnh Camera:
-          </label>
+        <div className="form-group">
+          <label className="form-label">Ảnh Tĩnh Camera (Làm nền vẽ AI):</label>
           <input
             type="file"
             accept="image/*"
             onChange={handleImageChange}
-            style={{
-              width: '100%',
-              padding: '10px',
-              border: '1px solid #ddd',
-              borderRadius: '4px'
-            }}
+            className="form-input"
             required
           />
         </div>
 
+        {/* Khung hiển thị trước hình ảnh (Preview) */}
         {imagePreview && (
-          <div style={{ 
-            marginBottom: '20px', 
-            border: '1px solid #ddd', 
-            borderRadius: '4px', 
-            overflow: 'hidden',
-            background: '#f5f5f5'
-          }}>
+          <div className="image-preview-container">
             <img 
               src={imagePreview} 
-              alt="Preview" 
-              style={{ 
-                width: '100%', 
-                maxHeight: '200px', 
-                objectFit: 'contain',
-                display: 'block'
-              }} 
+              alt="Preview camera upload" 
+              className="image-preview-img" 
             />
           </div>
         )}
 
+        {/* Khung báo lỗi validation */}
         {error && (
-          <div style={{
-            marginBottom: '20px',
-            padding: '10px',
-            background: '#f8d7da',
-            color: '#721c24',
-            borderRadius: '4px',
-            border: '1px solid #f5c6cb'
-          }}>
+          <div className="error-message">
             {error}
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button
-            type="button"
-            onClick={onCancel}
-            style={{
-              flex: 1,
-              padding: '12px',
-              background: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 500
-            }}
-          >
-            Hủy
+        <div className="form-actions">
+          <button type="button" className="btn-cancel" onClick={onCancel}>
+            Hủy Bỏ
           </button>
-          <button
-            type="submit"
-            style={{
-              flex: 1,
-              padding: '12px',
-              background: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: 500
-            }}
-          >
-            Vẽ Zone →
+          <button type="submit" className="btn-submit">
+            Tiếp tục vẽ Zone →
           </button>
         </div>
       </form>

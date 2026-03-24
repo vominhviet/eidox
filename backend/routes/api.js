@@ -1,3 +1,9 @@
+/**
+ * @file api.js
+ * @description Hệ thống định tuyến (API Router) quản lý Camera (CRUD) và Tích hợp Jenkins.
+ * Cung cấp các Endpoint cho Frontend React để tạo mới camera, nhận thông tin cấu hình AI Zone, 
+ * và kích hoạt Jenkins Pipeline.
+ */
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
