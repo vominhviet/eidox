@@ -1,0 +1,318 @@
+/* Thêm vào cuối file App.css */
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 2rem;
+  }
+  
+  .left-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .right-panel {
+    position: sticky;
+    top: 1rem;
+    height: fit-content;
+  }
+  
+  .camera-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .image-drawing-area {
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+  }
+  
+  .drawing-instructions {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-style: italic;
+  }
+  
+  .image-container {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .preview-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .drawing-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+  }
+  
+  .drawing-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+  
+  .zones-list {
+    margin-top: 1rem;
+    border-top: 1px solid #ddd;
+    padding-top: 1rem;
+  }
+  
+  .zone-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .payload-preview {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #2d2d2d;
+    color: #fff;
+    border-radius: 4px;
+  }
+  
+  .json-payload {
+    background-color: #1e1e1e;
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 1rem 0;
+  }
+  
+  /* Jenkins styles */
+  .jenkins-config {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .payload-summary {
+    background-color: #e9ecef;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin: 1rem 0;
+  }
+  
+  .mini-payload {
+    font-size: 0.8rem;
+    max-height: 100px;
+    overflow-y: auto;
+    background-color: #fff;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-family: monospace;
+  }
+  
+  .build-history {
+    margin-top: 2rem;
+  }
+  
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  
+  .history-table th,
+  .history-table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    text-transform: capitalize;
+  }
+  
+  .status-badge.triggered {
+    background-color: #cce5ff;
+    color: #004085;
+  }
+  
+  .status-badge.success {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .status-badge.failed {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .btn-small {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-small:hover {
+    background-color: #545b62;
+  }
+  
+  /* Modal styles */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .main-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .right-panel {
+      position: static;
+    }
+  }
+  /* Thêm vào cuối file App.css */
+
+.drawing-controls-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+  }
+  
+  .zone-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .zone-item:hover {
+    background-color: #f8f9fa;
+    border-color: #007bff;
+  }
+  
+  .zone-item.selected {
+    border: 2px solid #007bff;
+    background-color: #e7f1ff;
+  }
+  
+  .zone-info {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .zone-number {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .zone-type-badge {
+    background-color: #6c757d;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+  }
+  
+  .zone-style-badge {
+    background-color: #28a745;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+  }
+  
+  .zone-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .zone-type-select {
+    padding: 0.25rem;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 0.8rem;
+  }
+  
+  .zone-coords-preview {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+    font-family: monospace;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .drawing-controls-panel {
+      grid-template-columns: 1fr;
+    }
+    
+    .zone-info {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
