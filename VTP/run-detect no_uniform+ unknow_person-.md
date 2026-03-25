@@ -2,6 +2,7 @@
 # 1. Truy cập vào container
 docker exec -it ds-core /bin/bash
 # 2. Di chuyển đến folder của counting
+
 cd /workspace/cxview-plugin-counting/build
 --------------
 # 3. Truyền các giá trị của ENV
