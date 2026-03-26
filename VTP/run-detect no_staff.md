@@ -22,7 +22,7 @@ export USER_ID="test"
 config chỉ cho nhận diện nhân viên trong zone: no_staff
 
 
-export CONFIG='{"list_camera":[{"cam_info":{"url":"rtsp://admin:eidox2026@dvhcam1.cameraddns.net:5554","cam_id":"24860033-7d0c-49b1-8895-1cbe0f9458de"},"config":{"direction":[],"heatmap":{},"layout":{},"zone":[{"ID":"abc","type":1,"coord":[0.317,0.43,0.45,0.135,0.818,0.198,0.728,0.698],"axis":[]}],"reid":{"faiss_switch":0.6,"faiss_staff_db":0.8}}}]}'
+export CONFIG='{"list_camera":[{"cam_info":{"url":"rtsp://admin:eidox2026@dvhcam1.cameraddns.net:5554","cam_id":"24860033-7d0c-49b1-8895-1cbe0f9458de"},"config":{"direction":[],"heatmap":{},"layout":{},"zone":[{"ID":"abc","type":1,"coord":[0.423, 0.031, 0.884, 0.111, 0.748, 0.867, 0.233, 0.464],"axis":[]}],"reid":{"faiss_switch":0.6,"faiss_staff_db":0.8}}}]}'
 
 
 # 5. SAU KHI EXPORT CONFIG THÌ THỰC HIỆN Dump Config:
