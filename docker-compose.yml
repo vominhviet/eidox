@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  gateway:
+    build: ./gateway
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./gateway/.env
+    depends_on:
+      - redis
+      - mqtt
+
+  mqtt:
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"

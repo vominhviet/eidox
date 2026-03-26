@@ -1,0 +1,20 @@
+sudo cat /etc/systemd/system/openvpn-eidox.service
+[sudo] password for eidox:
+[Unit]
+Description=OpenVPN Eidox Client
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/openvpn --config /home/eidox/eidox_vtt-293pvd_vp.ovpn # thay path 
+Restart=always
+RestartSec=5
+User=root
+
+# bảo vệ process
+LimitNPROC=10000
+LimitCORE=infinity
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+requests
+redis
+paho-mqtt
+python-dotenv
