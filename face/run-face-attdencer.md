@@ -8,9 +8,22 @@
    
    * comment file ssl của kafka khi không có ssl của kafka server nếu không cmt thì chạy sẽ lỗi **path**: data/config
      ### lệnh chạy:
-   ```
-    docker run -d   --name ds_coreai   --network host   --privileged   --runtime=nvidia   -e DISPLAY=:0   -e QT_X11_NO_MITSHM=1   -v /tmp/.X11-unix:/tmp/.X11-unix   -e CONFIG='{"list_camera":[{"cam_info":{"url":"rtsp://admin:eidox.ai2026@192.168.100.112:5552/","cam_id":"1"},"config":{"cf1":"v1", "usage":"customer", "user_id":"3BFFB93A-6F74-4C8B-A6C5-F03064BAA684", "udp":true}}]}'   -e BOX_ID=AF74FCE6-0790-4B69-9F47-7A0F4E152C6D   -e BOOTSTRAP_SERVER="gateway-1.hn.eidox.ai;9093"   -e SEARCH_TOPIC=production-gatewayhn-searching   -e HEALTHCHECK_TOPIC=product-gatewayhn-alert   -v /dev/video1:/dev/video1   --pull=missing   hub.eidox.ai/ai/ds-aiview:2.1.3
-   ```
+  ```
+   docker run -d \
+  --name ss-coreai \
+  --network host \
+  --privileged \
+  --runtime=nvidia \
+  -e CONFIG='{"list_camera":[{"cam_info":{"url":"rtsp://admin:Samsung2026@192.168.1.101/profile2/media.smp","cam_id":"2d8f1c7a-9b34-4e6a-a5c2-7f1e3b9d6c40"},"config":{"cf1":"v1","usage":"customer","user_id":"a8c6a4f6e_3a1e_4d7f_9b6c_1b8a9d2f4c3e","udp":true}}]}' \
+  -e BOX_ID=7e2c9b4a-5d13-4f8e-a6c1-9b3d2f7a6e55 \
+  -e BOOTSTRAP_SERVER="gateway-1.hn.eidox.ai;9094" \
+  -e SEARCH_TOPIC=product-gatewayhn-searching \
+  -e HEALTHCHECK_TOPIC=product-gatewayhn-alert \
+  -v /dev/video1:/dev/video1 \
+  -v /certs:/certs \
+  --pull=missing \
+  hub.eidox.ai/ai/ds-aiview:2.1.3
+```
     ## 1.2 Cách chạy phần App-boxai:
    * Đây là phần hiển thị face trên màn hình box khi cắm màn DISPLAY=:0
 ```
@@ -32,6 +45,6 @@
   -v /certs:/certs \
   -v /tmp/tmpsock:/tmp/tmpsock \
   --pull=never \
-  hub.eidox.ai/ai/faceidapp_box:3.0.5
+  hub.eidox.ai/ai/faceidapp_box:3.0.10
 ```
   
