@@ -12,7 +12,8 @@
 -------------------------------------------------------------
 * Lưu ý: Nếu không dùng SSL cho Kafka, hãy comment cấu hình SSL 
   trong file tại đường dẫn: data/config
-* Lưu ý: Cần thay thế chính xác BOX_ID, Camera_ID, User_ID
+* Lưu ý: Cần thay thế chính xác BOX_ID, Camera_ID, User_ID **( công thức user_id : a + uuid _ )**
+* Lưu ý: nếu chạy **customer **"usage:customer"**** / chạy **attendace : "usage:attendance"**
 
 Lệnh chạy:
 ```
